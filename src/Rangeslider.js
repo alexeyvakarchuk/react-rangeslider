@@ -41,7 +41,7 @@ class Slider extends Component {
     onChangeStart: PropTypes.func,
     onChange: PropTypes.func,
     onChangeComplete: PropTypes.func
-  };
+  }
 
   static defaultProps = {
     min: 0,
@@ -53,7 +53,7 @@ class Slider extends Component {
     reverse: false,
     labels: {},
     handleLabel: ''
-  };
+  }
 
   constructor (props, context) {
     super(props, context)
@@ -79,7 +79,7 @@ class Slider extends Component {
   handleFormat = value => {
     const { format } = this.props
     return format ? format(value) : value
-  };
+  }
 
   /**
    * Update slider state on change
@@ -99,7 +99,7 @@ class Slider extends Component {
       limit: sliderPos - handlePos,
       grab: handlePos / 2
     })
-  };
+  }
 
   /**
    * Attach event listeners to mousemove/mouseup events
@@ -117,7 +117,7 @@ class Slider extends Component {
         onChangeStart && onChangeStart(e)
       }
     )
-  };
+  }
 
   /**
    * Handle drag/mousemove event
@@ -127,7 +127,9 @@ class Slider extends Component {
   handleDrag = e => {
     e.stopPropagation()
     const { onChange } = this.props
-    const { target: { className, classList, dataset } } = e
+    const {
+      target: { className, classList, dataset }
+    } = e
     if (!onChange || className === 'rangeslider__labels') return
 
     let value = this.position(e)
@@ -141,7 +143,7 @@ class Slider extends Component {
     }
 
     onChange && onChange(value, e)
-  };
+  }
 
   /**
    * Detach event listeners to mousemove/mouseup events
@@ -159,7 +161,7 @@ class Slider extends Component {
     )
     document.removeEventListener('mousemove', this.handleDrag)
     document.removeEventListener('mouseup', this.handleEnd)
-  };
+  }
 
   /**
    * Support for key events on the slider handle
@@ -184,7 +186,7 @@ class Slider extends Component {
         onChange && onChange(sliderValue, e)
         break
     }
-  };
+  }
 
   /**
    * Calculate position of slider based on its value
@@ -200,7 +202,7 @@ class Slider extends Component {
     const pos = Math.round(percentage * limit)
 
     return pos
-  };
+  }
 
   /**
    * Translate position of slider to slider value
@@ -211,11 +213,11 @@ class Slider extends Component {
     const { limit } = this.state
     const { orientation, min, max, step } = this.props
     const percentage = clamp(pos, 0, limit) / (limit || 1)
-    const baseVal = step * Math.round(percentage * (max - min) / step)
+    const baseVal = step * Math.round((percentage * (max - min)) / step)
     const value = orientation === 'horizontal' ? baseVal + min : max - baseVal
 
     return clamp(value, min, max)
-  };
+  }
 
   /**
    * Calculate position of slider based on value
@@ -242,7 +244,7 @@ class Slider extends Component {
     const value = this.getValueFromPosition(pos)
 
     return value
-  };
+  }
 
   /**
    * Grab coordinates of slider
@@ -255,16 +257,14 @@ class Slider extends Component {
     const value = this.getValueFromPosition(pos)
     const position = this.getPositionFromValue(value)
     const handlePos = orientation === 'horizontal' ? position + grab : position
-    const fillPos = orientation === 'horizontal'
-      ? handlePos
-      : limit - handlePos
+    const fillPos = orientation === 'horizontal' ? handlePos : limit - handlePos
 
     return {
       fill: fillPos,
       handle: handlePos,
       label: handlePos
     }
-  };
+  }
 
   renderLabels = labels => (
     <ul
@@ -275,7 +275,7 @@ class Slider extends Component {
     >
       {labels}
     </ul>
-  );
+  )
 
   render () {
     const {
@@ -360,17 +360,20 @@ class Slider extends Component {
           style={handleStyle}
           tabIndex={0}
         >
-          {showTooltip
-            ? <div
+          {showTooltip ? (
+            <div
               ref={st => {
                 this.tooltip = st
               }}
               className='rangeslider__handle-tooltip'
-              >
+            >
               <span>{this.handleFormat(value)}</span>
             </div>
-            : null}
+          ) : null}
           <div className='rangeslider__handle-label'>{handleLabel}</div>
+          <div className='rangeslider__handle-dot'>
+            <div className='track' />
+          </div>
         </div>
         {labels ? this.renderLabels(labelItems) : null}
       </div>
